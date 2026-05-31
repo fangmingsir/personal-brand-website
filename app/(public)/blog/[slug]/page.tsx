@@ -5,6 +5,7 @@ import { formatDate } from '@/lib/utils'
 import { FaEye, FaHeart, FaClock } from 'react-icons/fa'
 import Link from 'next/link'
 import Image from 'next/image'
+import { Post } from '@/types'
 
 interface PageProps {
   params: Promise<{
@@ -28,14 +29,16 @@ export async function generateMetadata({ params }: PageProps) {
     }
   }
 
+  const typedPost = post as Post
+
   return {
-    title: post.seo_title || post.title,
-    description: post.seo_description || post.excerpt,
-    keywords: post.seo_keywords,
+    title: typedPost.seo_title || typedPost.title,
+    description: typedPost.seo_description || typedPost.excerpt,
+    keywords: typedPost.seo_keywords,
     openGraph: {
-      title: post.title,
-      description: post.excerpt || '',
-      images: post.cover_image_url ? [post.cover_image_url] : [],
+      title: typedPost.title,
+      description: typedPost.excerpt || '',
+      images: typedPost.cover_image_url ? [typedPost.cover_image_url] : [],
     },
   }
 }

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { FaGithub, FaExternalLinkAlt } from 'react-icons/fa'
 import Link from 'next/link'
 import Image from 'next/image'
+import { Project } from '@/types'
 
 interface PageProps {
   params: Promise<{
@@ -27,13 +28,15 @@ export async function generateMetadata({ params }: PageProps) {
     }
   }
 
+  const typedProject = project as Project
+
   return {
-    title: project.title,
-    description: project.description,
+    title: typedProject.title,
+    description: typedProject.description,
     openGraph: {
-      title: project.title,
-      description: project.description,
-      images: project.cover_image_url ? [project.cover_image_url] : [],
+      title: typedProject.title,
+      description: typedProject.description,
+      images: typedProject.cover_image_url ? [typedProject.cover_image_url] : [],
     },
   }
 }
