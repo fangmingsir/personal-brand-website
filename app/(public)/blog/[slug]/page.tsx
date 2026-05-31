@@ -7,17 +7,18 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 export async function generateMetadata({ params }: PageProps) {
+  const { slug } = await params
   const supabase = await createClient()
   const { data: post } = await supabase
     .from('posts')
     .select('*')
-    .eq('slug', params.slug)
+    .eq('slug', slug)
     .eq('status', 'published')
     .single()
 
@@ -40,6 +41,7 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function PostPage({ params }: PageProps) {
+  const { slug } = await params
   const supabase = await createClient()
 
   // 获取文章详情
@@ -53,7 +55,7 @@ export default async function PostPage({ params }: PageProps) {
       post_tags(tags(*))
     `
     )
-    .eq('slug', params.slug)
+    .eq('slug', slug)
     .eq('status', 'published')
     .single()
 

@@ -7,17 +7,18 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 export async function generateMetadata({ params }: PageProps) {
+  const { slug } = await params
   const supabase = await createClient()
   const { data: project } = await supabase
     .from('projects')
     .select('*')
-    .eq('slug', params.slug)
+    .eq('slug', slug)
     .single()
 
   if (!project) {
@@ -38,6 +39,7 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function ProjectPage({ params }: PageProps) {
+  const { slug } = await params
   const supabase = await createClient()
 
   // 获取项目详情
@@ -52,7 +54,7 @@ export default async function ProjectPage({ params }: PageProps) {
       project_images (*)
     `
     )
-    .eq('slug', params.slug)
+    .eq('slug', slug)
     .single()
 
   if (!project) {
