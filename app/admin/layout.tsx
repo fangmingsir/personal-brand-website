@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 
 export default async function AdminLayout({
   children,
@@ -72,12 +73,12 @@ export default async function AdminLayout({
       <div className="flex-1">
         <header className="flex h-16 items-center justify-between border-b px-6">
           <h1 className="text-xl font-semibold">管理后台</h1>
-          <a
+          <Link
             href="/"
             className="text-sm text-muted-foreground hover:text-foreground"
           >
             返回网站
-          </a>
+          </Link>
         </header>
         <main className="p-6">{children}</main>
       </div>
