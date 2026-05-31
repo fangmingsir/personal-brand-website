@@ -65,7 +65,7 @@ export default async function ProjectPage({ params }: PageProps) {
   }
 
   // 增加浏览量
-  await supabase.rpc('increment_project_view_count', { project_id: project.id })
+  await supabase.rpc('increment_project_view_count', { project_id: project.id } as any)
 
   // 转换数据结构
   const techStacks =

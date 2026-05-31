@@ -67,7 +67,7 @@ export default async function PostPage({ params }: PageProps) {
   }
 
   // 增加浏览量
-  await supabase.rpc('increment_post_view_count', { post_id: post.id })
+  await supabase.rpc('increment_post_view_count', { post_id: post.id } as any)
 
   // 转换标签数据
   const tags = post.post_tags?.map((pt: any) => pt.tags) || []
