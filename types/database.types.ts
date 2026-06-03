@@ -6,7 +6,11 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export interface Database {
+export type Database = {
+  // 由 Supabase 客户端用于自动匹配 PostgREST 行为
+  __InternalSupabase: {
+    PostgrestVersion: '12.2.3'
+  }
   public: {
     Tables: {
       profiles: {
@@ -61,6 +65,7 @@ export interface Database {
           created_at?: string
           updated_at?: string
         }
+        Relationships: []
       }
       skills: {
         Row: {
@@ -96,6 +101,7 @@ export interface Database {
           created_at?: string
           updated_at?: string
         }
+        Relationships: []
       }
       projects: {
         Row: {
@@ -158,6 +164,159 @@ export interface Database {
           created_at?: string
           updated_at?: string
         }
+        Relationships: []
+      }
+      project_images: {
+        Row: {
+          id: string
+          project_id: string
+          image_url: string
+          alt_text: string | null
+          sort_order: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          project_id: string
+          image_url: string
+          alt_text?: string | null
+          sort_order?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          project_id?: string
+          image_url?: string
+          alt_text?: string | null
+          sort_order?: number
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'project_images_project_id_fkey'
+            columns: ['project_id']
+            isOneToOne: false
+            referencedRelation: 'projects'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      tech_stacks: {
+        Row: {
+          id: string
+          name: string
+          slug: string
+          icon_url: string | null
+          color: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          slug: string
+          icon_url?: string | null
+          color?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          slug?: string
+          icon_url?: string | null
+          color?: string | null
+          created_at?: string
+        }
+        Relationships: []
+      }
+      project_tech_stacks: {
+        Row: {
+          project_id: string
+          tech_stack_id: string
+          created_at: string
+        }
+        Insert: {
+          project_id: string
+          tech_stack_id: string
+          created_at?: string
+        }
+        Update: {
+          project_id?: string
+          tech_stack_id?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'project_tech_stacks_project_id_fkey'
+            columns: ['project_id']
+            isOneToOne: false
+            referencedRelation: 'projects'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'project_tech_stacks_tech_stack_id_fkey'
+            columns: ['tech_stack_id']
+            isOneToOne: false
+            referencedRelation: 'tech_stacks'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      categories: {
+        Row: {
+          id: string
+          name: string
+          slug: string
+          description: string | null
+          icon_url: string | null
+          sort_order: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          slug: string
+          description?: string | null
+          icon_url?: string | null
+          sort_order?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          slug?: string
+          description?: string | null
+          icon_url?: string | null
+          sort_order?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      tags: {
+        Row: {
+          id: string
+          name: string
+          slug: string
+          color: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          slug: string
+          color?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          slug?: string
+          color?: string
+          created_at?: string
+        }
+        Relationships: []
       }
       posts: {
         Row: {
@@ -220,87 +379,121 @@ export interface Database {
           created_at?: string
           updated_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: 'posts_author_id_fkey'
+            columns: ['author_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'posts_category_id_fkey'
+            columns: ['category_id']
+            isOneToOne: false
+            referencedRelation: 'categories'
+            referencedColumns: ['id']
+          },
+        ]
       }
-      categories: {
+      post_tags: {
         Row: {
-          id: string
-          name: string
-          slug: string
-          description: string | null
-          icon_url: string | null
-          sort_order: number
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          name: string
-          slug: string
-          description?: string | null
-          icon_url?: string | null
-          sort_order?: number
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          name?: string
-          slug?: string
-          description?: string | null
-          icon_url?: string | null
-          sort_order?: number
-          created_at?: string
-          updated_at?: string
-        }
-      }
-      tags: {
-        Row: {
-          id: string
-          name: string
-          slug: string
-          color: string
+          post_id: string
+          tag_id: string
           created_at: string
         }
         Insert: {
-          id?: string
-          name: string
-          slug: string
-          color?: string
+          post_id: string
+          tag_id: string
           created_at?: string
         }
         Update: {
-          id?: string
-          name?: string
-          slug?: string
-          color?: string
+          post_id?: string
+          tag_id?: string
           created_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: 'post_tags_post_id_fkey'
+            columns: ['post_id']
+            isOneToOne: false
+            referencedRelation: 'posts'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'post_tags_tag_id_fkey'
+            columns: ['tag_id']
+            isOneToOne: false
+            referencedRelation: 'tags'
+            referencedColumns: ['id']
+          },
+        ]
       }
-      tech_stacks: {
+      post_likes: {
         Row: {
-          id: string
-          name: string
-          slug: string
-          icon_url: string | null
-          color: string | null
+          user_id: string
+          post_id: string
           created_at: string
         }
         Insert: {
-          id?: string
-          name: string
-          slug: string
-          icon_url?: string | null
-          color?: string | null
+          user_id: string
+          post_id: string
           created_at?: string
         }
         Update: {
-          id?: string
-          name?: string
-          slug?: string
-          icon_url?: string | null
-          color?: string | null
+          user_id?: string
+          post_id?: string
           created_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: 'post_likes_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'post_likes_post_id_fkey'
+            columns: ['post_id']
+            isOneToOne: false
+            referencedRelation: 'posts'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      post_bookmarks: {
+        Row: {
+          user_id: string
+          post_id: string
+          created_at: string
+        }
+        Insert: {
+          user_id: string
+          post_id: string
+          created_at?: string
+        }
+        Update: {
+          user_id?: string
+          post_id?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'post_bookmarks_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'post_bookmarks_post_id_fkey'
+            columns: ['post_id']
+            isOneToOne: false
+            referencedRelation: 'posts'
+            referencedColumns: ['id']
+          },
+        ]
       }
       media: {
         Row: {
@@ -339,6 +532,42 @@ export interface Database {
           alt_text?: string | null
           created_at?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: 'media_user_id_fkey'
+            columns: ['user_id']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      site_stats: {
+        Row: {
+          id: string
+          date: string
+          page_views: number
+          unique_visitors: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          date?: string
+          page_views?: number
+          unique_visitors?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          date?: string
+          page_views?: number
+          unique_visitors?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
     }
     Views: {
@@ -347,14 +576,17 @@ export interface Database {
     Functions: {
       increment_post_view_count: {
         Args: { post_id: string }
-        Returns: void
+        Returns: undefined
       }
       increment_project_view_count: {
         Args: { project_id: string }
-        Returns: void
+        Returns: undefined
       }
     }
     Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
       [_ in never]: never
     }
   }
